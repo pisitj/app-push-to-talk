@@ -1,0 +1,129 @@
+openapi: 3.0.0
+info:
+  title: auth
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /login:
+    post:
+      summary: ''
+      operationId: post-login
+      responses:
+        '200':
+          description: OK
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: jwt-auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      description: login user by creating session in table user_session & Set-Cookie of jwt-auth
+  /signup:
+    post:
+      summary: ''
+      operationId: post-signup
+      responses:
+        '200':
+          description: OK
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: jwt-auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      description: create new user
+  /check-login:
+    get:
+      summary: ''
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_login:
+                    type: boolean
+      operationId: get-check-login
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+      description: check if valid user from jwt-auth
+  /check-admin:
+    get:
+      summary: ''
+      operationId: get-check-admin
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_admin:
+                    type: boolean
+      description: check if admin user from jwt-auth
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+  /check-whitelist/push-to-talk:
+    get:
+      summary: ''
+      tags: []
+      responses: {}
+      operationId: get-check-whitelist-push-to-talk
+      description: check if whitelist user for push-to-talk from jwt-auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_whitelist_push_to_talk:
+                  type: boolean
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+  /logout:
+    get:
+      summary: ''
+      tags: []
+      responses:
+        '200':
+          description: OK
+      operationId: get-logout
+      description: remove jwt-auth from cookie & expire login session from table user_session
+      parameters: []
+components:
+  schemas: {}

@@ -1,0 +1,317 @@
+openapi: 3.0.0
+info:
+  title: backend
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8081'
+paths:
+  /chat:
+    get:
+      summary: ''
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chat:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        chat_id:
+                          type: string
+                        chat_name:
+                          type: string
+                        member:
+                          type: array
+                          items:
+                            type: string
+              examples: {}
+      operationId: get-chat
+      description: get list of chat by user_id
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+        description: ''
+    post:
+      summary: ''
+      operationId: post-chat
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chat:
+                    type: object
+                    properties:
+                      chat_id:
+                        type: string
+                      chat_name:
+                        type: string
+                      member:
+                        type: array
+                        items:
+                          type: string
+      description: create new chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                member:
+                  type: array
+                  items:
+                    type: string
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+  '/chat/{chat_id}/message':
+    parameters:
+      - schema:
+          type: string
+        name: chat_id
+        in: path
+        required: true
+    get:
+      summary: ''
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chat_history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        message_id:
+                          type: string
+                        sender:
+                          type: string
+                        message_type:
+                          type: string
+                        message_body:
+                          type: string
+                        created_at:
+                          type: string
+      operationId: get-chat-chat_id
+      description: get chat history by user_id & chat_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+    post:
+      summary: ''
+      operationId: post-chat-chat_id-message
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message_id:
+                    type: string
+                  sender:
+                    type: string
+                  message_type:
+                    type: string
+                  message_body:
+                    type: string
+                  created_at:
+                    type: string
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sender:
+                  type: string
+                message_type:
+                  type: string
+                message_body:
+                  type: string
+      description: create new chat message
+  '/push-to-talk/chat/{chat_id}/message/{message_id}':
+    parameters:
+      - schema:
+          type: string
+        name: chat_id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: message_id
+        in: path
+        required: true
+    get:
+      summary: ''
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+      operationId: get-push-to-talk-chat-chat_id-message-message_id
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+      description: get push-to-talk file by chat_id & message_id
+  '/POST /push-to-talk/chat/{chat_id}/message':
+    parameters:
+      - schema:
+          type: string
+        name: chat_id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-POST-push-to-talk-chat-chat_id-message
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message_id:
+                    type: string
+      description: create new push-to-talk file by chat_id
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties: {}
+  /push-to-talk/report:
+    get:
+      summary: ''
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  report:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        chatroom_name:
+                          type: string
+                        sender:
+                          type: string
+                        recording_length:
+                          type: string
+      operationId: get-push-to-talk-report
+      description: get report for push-to-talk
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: jwt-auth
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: ''
+      x-examples:
+        Alice Smith:
+          id: 142
+          firstName: Alice
+          lastName: Smith
+          email: alice.smith@gmail.com
+          dateOfBirth: '1997-10-31'
+          emailVerified: true
+          signUpDate: '2019-08-24'
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1997-10-31'
+        emailVerified:
+          type: boolean
+          description: Set to true if the user's email has been verified.
+        createDate:
+          type: string
+          format: date
+          description: The date that the user was created.
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - emailVerified
+  securitySchemes: {}
